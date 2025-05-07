@@ -1,7 +1,12 @@
 const kaia = {
-    name: "Kaia the Bold",
+    name: "Krug The Hunter",
     age: 47,
-    class: "Mage",
+    class: {
+        className: "Hunter",
+        Arrows: 0,
+        NotchedArrows: 0,
+        evasive: 0.2,
+    },
     status: [],
     baseStats: {
       hp: 100,
