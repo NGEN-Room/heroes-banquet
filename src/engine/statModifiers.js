@@ -1,39 +1,61 @@
 export function applyModifiers(character) {
-    let modified = { ...character };
-  
-    const { brawn, brains, speed } = character.rawStats;
-  
-    // Apply age-based stat modifiers
-    if (character.age <= 20) {
-      modified.rawStats = {
-        brawn: brawn + 2,
-        brains: brains - 2,
-        speed: speed + 1
-      };
-    } else if (character.age >= 41 && character.age <= 60) {
-      modified.rawStats = {
-        brawn: brawn - 2,
-        brains: brains + 2,
-        speed: speed - 1
-      };
-    }
-  
-    // Apply class bonuses (simplified)
-    switch (character.class) {
-      case "Warrior":
-        modified.baseStats.hp += 30;
-        modified.baseStats.ap += 1;
-        break;
-      case "Mage":
-        modified.baseStats.hp -= 10;
-        modified.baseStats.mp += 40;
-        break;
-      case "Ranger":
-        modified.baseStats.hp += 10;
-        modified.baseStats.mp += 10;
-        modified.baseStats.ap += 2;
-        break;
-    }
-  
-    return modified;
+  const modified = JSON.parse(JSON.stringify(character)); // Deep clone to avoid mutation
+
+  const { age, class: classObj, rawStats, baseStats } = character;
+
+  // ----------- Stat Modifier Base -----------
+  let brawn = rawStats.brawn;
+  let brains = rawStats.brains;
+  let speed = rawStats.speed;
+
+  // ----------- Age Modifiers -----------
+  if (age <= 20) {
+    brawn += 2;
+    brains -= 2;
+    speed += 1;
+  } else if (age >= 41 && age <= 60) {
+    brawn -= 2;
+    brains += 2;
+    speed -= 1;
+  } else if (age > 60) {
+    brawn -= 3;
+    brains += 3;
+    speed -= 2;
   }
+
+  // ----------- Class Modifiers -----------
+  let hp = baseStats.hp;
+  let mp = baseStats.mp;
+  let ap = baseStats.ap;
+
+  switch (classObj.className) {
+    case "Warrior":
+      hp += 30;
+      ap += 1;
+      break;
+    case "Mage":
+      hp -= 10;
+      mp += 40;
+      break;
+    case "Hunter":
+    case "Ranger":
+      hp += 10;
+      mp += 10;
+      ap += 2;
+      break;
+    default:
+      break;
+  }
+
+  // Finalize modified stats
+  modified.modifiedStats = {
+    brawn,
+    brains,
+    speed,
+    hp,
+    mp,
+    ap
+  };
+
+  return modified;
+}
