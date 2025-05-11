@@ -1,22 +1,27 @@
+import { moveRight } from "@/engine/movementEngine";
+import { getDistance, getRangeLevel } from "@/engine/movementEngine";
+
 const chActions = {
-    powerStrike: {
-      name: "Power Strike",
-      cost: 2,
-      damage: 20,
-      effect: (user, target) => {
-        target.hp -= 20 + user.modifiedStats.brawn * 2;
-        user.class.rage += 1;
-      }
-    },
-    bash: {
-      name: "Shield Bash",
-      cost: 1,
-      damage: 10,
-      effect: (user, target) => {
-        target.hp -= 10 + user.modifiedStats.brawn;
-        target.status.push("stunned");
+  stab: {
+    name: "Stab",
+    cost: 1,
+    speed: 3,
+    effect: (self, target) => {
+      const range = getRangeLevel(getDistance(self, target));
+      if (range === 0) {
+        target.hp -= 10 + self.modifiedStats.brawn;
       }
     }
-  };
-  
-  export default chActions;
+  },
+
+  charge: {
+    name: "Charge Forward",
+    cost: 1,
+    effect: (self) => {
+      moveRight(self);
+      self.class.rage += 1;
+    }
+  }
+};
+
+export default chActions;
